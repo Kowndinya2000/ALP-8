@@ -1,36 +1,34 @@
 .data
-A: .float 1.2, 2.2, 2.3, 3.4
-B: .float 2.2, 3.2, 4.3, 5.3
-C: .float 0.0, 0.0, 0.0, 0.0
-sizearr1: .word 2
-sizearr2: .word 2
+array: .word 1, 2, 3, 4, 3, 3, 3
+size:  .word 7
+count: .word 0
+element: .word 3
 
 .text
 main:
-la $s0,A
-la $s1,B
-la $s2,C
-
-lw $t1,sizearr1
-mul $t1,$t1,$t1
+la $a0,array
+lw $a1,size
+lw $a2,element
 sub $sp,$sp,4
 sw $ra,0($sp)
-jal addti
+jal sea
+sw $v0,count
 lw $ra,0($sp)
 add $sp,$sp,4
 jr $ra
 
-addti:
+sea:
+addi $v1,$v1,0
+addi $t0,$t0,0
+loop:
+slt $t1,$t0,$a1
 beq $t1,$0,exit
-l.s $f3,($s0)
-l.s $f4,($s1)
-add.s $f5,$f3,$f4
-s.s $f5,($s2)
-add $s0,$s0,4
-add $s1,$s1,4
-add $s2,$s2,4
-sub $t1,$t1,1
-j addti
-
-exit:
+lw $s1,($a0)
+addi $a0,$a0,4
+bne $s1,$a2,jloop
+addi $v1,$v1,1
+jloop:
+addi $t0,$t0,1
+j loop
+exit: 
 jr $ra
